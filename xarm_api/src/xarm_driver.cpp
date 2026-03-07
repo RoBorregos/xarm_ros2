@@ -289,7 +289,7 @@ namespace xarm_api
         if (add_gripper) {
             xarm_gripper_init_loop_ = false;
             std::thread([this]() {
-                float cur_pos;
+                int cur_pos;
                 int ret = arm->get_gripper_position(&cur_pos);
                 while (ret == 0 && !xarm_gripper_init_loop_)
                 {
