@@ -245,6 +245,12 @@ namespace uf_robot_hardware
     CallbackReturn UFRobotSystemHardware::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
         xarm_driver_.arm->motion_enable(true);
+		// Fase 0.1 (safety net): enable firmware collision detection on EVERY hardware activation
+		// so the arm stops on unexpected contact even before higher-level nodes start. This is a
+		// safe floor (3); the authoritative/tunable value is re-applied from Python at node startup
+		// (XArmServices.set_collision_sensitivity / COLLISION_SENSITIVITY). 0=off, 1-5 higher=more
+		// sensitive. See docs/pick_robustez_plan.md. A finger broke once because this was unset.
+		xarm_driver_.arm->set_collision_sensitivity(3);
 		xarm_driver_.arm->set_mode(velocity_control_ ? XARM_MODE::VELO_JOINT : XARM_MODE::SERVO);
 		xarm_driver_.arm->set_state(XARM_STATE::START);
 
